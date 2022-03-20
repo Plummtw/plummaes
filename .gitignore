@@ -1,4 +1,5 @@
 /target
 *.txt
 *.out
-key.file
+key.*
+*.key

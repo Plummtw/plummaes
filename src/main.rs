@@ -55,7 +55,9 @@ fn encrypt_file(input: &str, output: &str, key: &[u8]) {
 
             let result : Vec<u8> = encrypt(&bytes, key_first);
             let mut result : Vec<u8> = result.iter().enumerate().map(|(i, &byte)|
-                 byte ^ key_second[i%key_second.len()]).collect();
+                if i < 16 { byte }
+                else {
+                    byte ^ key_second[i%key_second.len()]}).collect();
 
             let mut header_block = [0u8; 8];
             header_block[0..8].copy_from_slice(&"Plumm1.1".as_bytes()[0..8]);
@@ -105,7 +107,9 @@ fn decrypt_file(input: &str, output: &str, key: &[u8]) {
             let key_second = &key[32..64];
 
             let result : Vec<u8> = bytes.iter().enumerate().map(|(i, &byte)|
-                byte ^ key_second[i%key_second.len()]).collect();            
+                if i < 16 { byte }
+                else {
+                    byte ^ key_second[i%key_second.len()]}).collect();
             let result : Vec<u8> = decrypt(&result, key_first);
 
             let mut decoder = GzDecoder::new(result.as_slice());
