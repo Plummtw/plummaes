@@ -18,3 +18,4 @@ version:
 - v0.1.1 : Add Gzip Compress and File Header "Plumm 1.1"
 - v0.1.2 : Allow encrypt input to be Plain Text (When File Not Found)
 - v0.1.3 : Allow keyfile to be over 64 bytes (only first 64 bytes are used)
+- v0.1.4 : Add Base32 Support
