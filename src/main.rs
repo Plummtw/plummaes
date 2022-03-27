@@ -126,9 +126,16 @@ fn decrypt_file(input: &str, output: &str, key: &[u8]) {
 
             let mut decoder = GzDecoder::new(result.as_slice());
             let mut buf : Vec<u8> = Vec::new();
-            let _ = decoder.read_to_end(&mut buf).unwrap();
+            match decoder.read_to_end(&mut buf) {
+                Ok(_) => {
+                    std::fs::write(output, buf).unwrap();
+                },
+                Err(_) => {
+                    std::fs::write(output, result).unwrap();
+                }
+            };
             
-            std::fs::write(output, buf).unwrap();
+            // std::fs::write(output, buf).unwrap();
         },
         Err(e) => {
             if e.kind() == std::io::ErrorKind::PermissionDenied {
@@ -140,7 +147,7 @@ fn decrypt_file(input: &str, output: &str, key: &[u8]) {
 }
 
 fn show_usage() {
-    eprintln!("plummaes version 1.1.0 2022/03/20");
+    eprintln!("plummaes version 0.1.3 2022/03/27");
     eprintln!("usage: ");
     eprintln!("    plummaes generate <keyfile>");
     eprintln!("    plummaes encrypt <input> <output> <keyfile>");

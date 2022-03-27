@@ -1,4 +1,4 @@
-plummaes version 0.1.2 2022/03/20
+plummaes version 0.1.3 2022/03/27
 
 use AES256(no iv) with key xor to encrypt/decrypt file
 
@@ -7,7 +7,11 @@ usage:
 - plummaes encrypt <input> <output> <keyfile>
 - plummaes decrypt <input> <output> <keyfile>
 
-Note : keyfile must be 64 bytes or more
+Warning: 
+- generate would overwrite existing keyfile.
+- encrypt and decrypt would overwrite existing output file.
+
+Note: keyfile must be 64 bytes or more.
 
 version:
 - v0.1.0 : AES256(no iv) + key xor 
