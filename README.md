@@ -1,4 +1,4 @@
-plummaes version 1.1.0 2022/03/20
+plummaes version 0.1.2 2022/03/20
 
 use AES256(no iv) with key xor to encrypt/decrypt file
 
@@ -10,5 +10,6 @@ usage:
 Note : keyfile must be 64 bytes
 
 version:
-- v1.0 : AES256(no iv) + key xor 
-- v1.1 : Add Gzip Compress and File Header "Plumm 1.1"
+- v0.1.0 : AES256(no iv) + key xor 
+- v0.1.1 : Add Gzip Compress and File Header "Plumm 1.1"
+- v0.1.2 : Allow encrypt input to be Plain Text (When File Not Found)

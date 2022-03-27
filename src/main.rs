@@ -42,36 +42,34 @@ fn encrypt(input: &[u8], key: &[u8]) -> Vec<u8> {
 }
 
 fn encrypt_file(input: &str, output: &str, key: &[u8]) {
-    match std::fs::read(input) {
+    let input_bytes = match std::fs::read(input) {
         Ok(bytes) => {
-            let mut e = GzEncoder::new(Vec::new(), Compression::default());
-            let _ = e.write_all(bytes.as_slice()).unwrap();
-            let buf = e.finish().unwrap();
-
-            let bytes = buf.clone();
-
-            let key_first = &key[0..32];
-            let key_second = &key[32..64];
-
-            let result : Vec<u8> = encrypt(&bytes, key_first);
-            let mut result : Vec<u8> = result.iter().enumerate().map(|(i, &byte)|
-                if i < 16 { byte }
-                else {
-                    byte ^ key_second[i%key_second.len()]}).collect();
-
-            let mut header_block = [0u8; 8];
-            header_block[0..8].copy_from_slice(&"Plumm1.1".as_bytes()[0..8]);
-
-            let _ = result.splice(0..8, header_block);
-            std::fs::write(output, result).unwrap();
+           bytes.clone()
         },
-        Err(e) => {
-            if e.kind() == std::io::ErrorKind::PermissionDenied {
-                panic!("please run again with appropriate permissions.");
-            }
-            panic!("{}", e);
+        Err(_) => {
+            input.to_owned().into_bytes()
         }
-    }
+    };
+    let mut e = GzEncoder::new(Vec::new(), Compression::default());
+    let _ = e.write_all(&input_bytes).unwrap();
+    let buf = e.finish().unwrap();
+
+    let bytes = buf.clone();
+
+    let key_first = &key[0..32];
+    let key_second = &key[32..64];
+
+    let result : Vec<u8> = encrypt(&bytes, key_first);
+    let mut result : Vec<u8> = result.iter().enumerate().map(|(i, &byte)|
+        if i < 16 { byte }
+        else {
+            byte ^ key_second[i%key_second.len()]}).collect();
+
+    let mut header_block = [0u8; 8];
+    header_block[0..8].copy_from_slice(&"Plumm1.1".as_bytes()[0..8]);
+
+    let _ = result.splice(0..8, header_block);
+    std::fs::write(output, result).unwrap();
 }
 
 fn decrypt(input: &[u8], key: &[u8]) -> Vec<u8> {
