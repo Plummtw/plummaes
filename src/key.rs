@@ -26,8 +26,8 @@ pub(crate) fn read_key_file(file: &str) -> Vec<u8> {
 pub(crate) fn generate(file: &str) {
     let mut key = [0u8; 64];
     let mut rng = rand::thread_rng();
-    for i in 0..key.len() {
-        key[i] = rng.gen();
+    for item in &mut key {
+        *item = rng.gen();
     }
     std::fs::write(file, key).unwrap();
 }

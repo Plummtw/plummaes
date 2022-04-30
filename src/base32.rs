@@ -7,10 +7,9 @@ pub(crate) fn encrypt_base32(input: &[u8]) -> [u8;5] {
   let input_copy = input.iter().map(|x| {
     // 0-25 for A-Z
     // 26-31 for other
-    let c = *x as char;
-    match c {
-      'a'..='z' => (c as u8) - ('a' as u8),
-      'A'..='Z' => (c as u8) - ('A' as u8),
+    match *x as char {
+      c @ 'a'..='z' => (c as u8) - b'a',
+      c @ 'A'..='Z' => (c as u8) - b'A',
       _ => rng.gen::<u8>() % 6 + 26,
     }
   }).collect::<Vec<_>>();
@@ -27,7 +26,7 @@ pub(crate) fn encrypt_base32(input: &[u8]) -> [u8;5] {
   result[3] = (input_copy[4] & 0b1) << 7 | input_copy[5] << 2 | input_copy[6] >> 3;
   result[4] = (input_copy[6] & 0b111) << 5 | input_copy[7];
 
-  return result;
+  result
 }
 
 pub(crate) fn decrypt_base32(input: &[u8]) -> [u8;8] {
@@ -51,13 +50,13 @@ pub(crate) fn decrypt_base32(input: &[u8]) -> [u8;8] {
   result[6] = (input[3] & 0b11) << 3 | input[4] >> 5;
   result[7] = input[4] & 0b11111;
 
-  for i in 0..8 {
-    let c = match result[i] {
-      n @ 0..=25 => n + ('a' as u8),
-      _ => ' ' as u8,
+  for item in &mut result {
+    let c = match *item {
+      n @ 0..=25 => n + b'a',
+      _ => b' ',
     };
-    result[i] = c;
+    *item = c;
   }
 
-  return result;
+  result
 }
